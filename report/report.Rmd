@@ -1,0 +1,101 @@
+---
+title: "Multiple Least Squares Regression Report"
+output: pdf_document
+---
+
+```{r loadingdata, echo=FALSE}
+#setwd("/Users/josephfrancia/Desktop/Fall_2016/Stats159/stat159-fall2016-hw03/report")
+load("../data/regression.RData")
+load("../data/correlation-matrix.RData")
+```
+
+Joseph Francia  
+Professor Gaston Sanchez  
+Stats 159  
+14 October 2016  
+
+
+#Abstract
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; In this report, I'm going to first examine datasets corresponding to the following variables: sales, newspaper advertising, radio advertising, and tv advertising. Afterwards, I am going to show the relationship between these various modes of advertising and sales by running a multiple regression of sales on tv advertising, radio advertising, and newspaper advertising. I will then discuss the relevant regression statistics from this regression I ran.  
+
+#Introduction
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; All the internet products that I use are free. **Facebook**, **Gmail**, and **Google**, amongst many other technology products, are all free to use. The only source of revenue for these companies is essentially advertising revenue. So how effective is it to advertise? Moreover, how would one go about testing the effectiveness of advertising? In this report, I am going to examine a dataset that contains data on sales and different forms of advertising. 
+
+#Data
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Before we have a discussion on how advertising (our explanatory variables) interacts with sales (our response variable) through linear regression, lets first take a look at a correlation matrix between all four of our variables. An entry in a correlation matrix details the level of correlation between two variables. It turns out that all of our variables are positively correlated with each other to varying degrees. The strongest correlation (.782) exists between sales and television advertising. Meanwhile, the weakest correlation (.054) exists between television and newspaper advertising. These results seem to suggest that television advertising could be quite useful in predicting the response. The correlation matrix also seems to suggest that newspaper advertising might not help much in explaining our response variable. I've shown the correlation matrix below: 
+
+
+```{r corr_mat, echo=FALSE}
+print("Correlation Matrix")
+corr
+```
+
+
+#Methodology
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; In order to analyze the relationship between advertising and revenue, I first had to designate which variable was explanatory and which one was the response. In this assignment, the specification was for advertising spending to be the explanatory variable with revenues as the response. In order to measure the relationship between tv/radio/newspaper advertising spending and revenues, I ran a multiple least squares regression. Least squares regression outputs a beta vector, which quantifies the relationship between the different forms of advertising spending and revenues. For instance, if the beta coefficient for newspaper advertising took on the value of .35, this would indicate that an increase in newspaper advertising by 1 dollar causes an increase in sales by .35 units (holding all other variables constant). But how do we know that we're using multiple least squares regression correctly?  
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; One of the key assumptions in linear regression is that the residuals are on average zero for all fitted values. In the graph below, I plotted a scatterplot, showing the relationship between the regression's standardized residuals and their corresponding fitted values.  
+
+
+\includegraphics[width=600pt, height=300pt]{../images/scale-location-plot.png}
+
+
+#Results
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; So what did our multiple least squares regression say about the relationship between ad spending and revenues? According to our least squares regression, for every $1000 increase in tv ad spending, sales go up by 45.77 units. Meanwhile, every $1000 increase in radio ad spending led to an increase in sales by 188.53 units. Finally, a $1000 dollar increase in newspaper ad spending actually *decreases* sales by 1.03 units. The table below details the coefficient estimates for the multiple least squares model. 
+
+
+```{r multiple_reg, echo=FALSE}
+print("Summary of Multiple Least Squares Regression")
+summary(model)[4]
+```
+
+
+I've also attached details about the F-Squared, R-Squared, and RSE. The F-Squared statistic tells us how statistically significant our regression results are when tested against the null hypothesis that all of the variables are useless. A larger F Statistic means that more statistical significance. R-Squared, meanwhile, measures how well our explanatory variables explain the response variable. An R-Squared value close to one indicates that our regression line is doing a good job of capturing our response values. RSE (Residual Standard Error), meanwhile, tells us the average deviation of our fitted values from our true response values. 
+
+```{r F-squared, echo=FALSE}
+print("More Statistics For Our Multiple Least Squares Regression")
+Quantity=c("RSE", "R-Squared", "F Statistic")
+Value=c(summary(model)$sigma, summary(model)$r.squared, as.numeric(summary(model)$fstatistic[1]))
+df=data.frame(Quantity, Value)
+df
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; So what do these values tell us? For one, the R-Squared of .8972 is fairly close to 1, and this tells us our explanatory variables do a fairly good job of explaining the variation in our response. In other words, our model fits the data pretty well. Meanwhile, the RSE value of 1.685 is quite small and indicates that our predictions are fairly accurate and do not deviate very much from our response values. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Because this multiple least squares regression has more than two explanatory variables, there isn't a way to show the regression line in a two or three dimensional space. As a result, I've shown below a pairwise scatterplot below that demonstrates all of the possible two dimensional scatterplots that could have been constructed from the dataset.
+
+\includegraphics[width=600pt, height=300pt]{../images/scatterplot-matrix.png}
+
+
+In addition, I've attached coefficient estimates of these simple least squares regression model.
+
+```{r tv_reg, echo=FALSE}
+print("Summary of TV Advertising Regression")
+reg_summary_tv[4]
+```
+
+```{r radio_reg, echo=FALSE}
+print("Summary of Radio Advertising Regression")
+reg_summary_radio[4]
+```
+
+```{r newspaper_reg, echo=FALSE}
+print("Summary of Newspaper Advertising Regression")
+reg_summary_news[4]
+```
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The above visual shows a pretty clear positive relationship between all advertising spending and sales. The scatterplot that shows the strong positive relationship between sales and newspaper advertising, however, seems to contradict our findings from our multiple least squares regression, which finds a negative relationship between the two variables. Surprisingly, it is fairly common for beta coefficients of variables to change when new variables are added into the regression. For instance, newspaper advertising could be strongly correlated with both tv and radio advertising. As a result, in our Sales~Newspaper regression, the positive relationship between the two variables may actually just come from radio and tv advertising, which do not show up in the regression.  
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is actually a strong advantage of multiple least squares regression. Including more variables into a regression can allow us to get a more precise estimate for the relationship between two variables. 
+
+#Conclusions
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Least squares regression tells us how variables move and interact with each other. It doesn't, however, tell us which direction the causation runs. For instance, it could very well be that increasing revenues causes an increase in ad spending. Maybe an increase in revenues allows a company's advertising budget to increase, thus causing more ad spending. This is called reverse causality. It could also very well be that increasing ad spending is merely positively correlated with another variable that actually causes revenue to increase. This is called omitted variable bias.  
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; In short, the results of least squares regression should always be taken with a grain of salt. Demonstrating a mere relationship between two variables does not imply any sort of causation between variables in either direction. 
+
