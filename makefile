@@ -3,10 +3,11 @@
 all: data tests eda regression report.pdf
 
 session-info.txt: session-info-script.R
-	cd code; Rscript session-info-script.R
+	cd code; cd scripts; Rscript $^
 
-report.pdf: report/report.RMD 
-	cd report; Rscript -e "rmarkdown::render('report.pdf')"
+report.pdf: 
+	cd report; Rscript -e "rmarkdown::render('report.Rmd')"
+
 
 clean: 
 	cd report; rm report.pdf
