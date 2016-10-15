@@ -2,9 +2,6 @@
 
 all: data tests eda-output.txt data regression.RData report.pdf
 
-report.pdf: report/report.RMD 
-	cd report; pandoc report.RMD -s -o report.pdf
-
 
 regression.RData: code/scripts/regression-script.R data/Advertising.csv
 	cd code; cd scripts; Rscript regression-script.R Advertising.csv
