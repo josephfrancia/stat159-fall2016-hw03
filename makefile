@@ -1,13 +1,12 @@
-.PHONY: clean data tests all eda regression
+.PHONY: clean data tests all eda regression session-info.txt
 
 all: data tests eda-output.txt data regression.RData report.pdf
 
+session-info.txt: 
+	cd code; Rscript session-info-script.R
 
-regression.RData: code/scripts/regression-script.R data/Advertising.csv
-	cd code; cd scripts; Rscript regression-script.R Advertising.csv
-
-eda-output.txt: code/scripts/eda-script.R data/Advertising.csv
-	cd code; cd scripts; Rscript eda-script.R Advertising.csv
+report.pdf: report/report.RMD 
+	cd report; Rscript -e "rmarkdown::render('report.pdf')"
 
 clean: 
 	cd report; rm report.pdf
@@ -22,4 +21,4 @@ eda:
 	cd code; cd scripts; Rscript eda-script.R Advertising.csv
 
 regression:
-	cd code; cd scripts; Rscript regression-script.R ../../data/Advertising.csv
+	cd code; cd scripts; Rscript regression-script.R Advertising.csv
