@@ -1,8 +1,8 @@
 .PHONY: clean data tests all eda regression session-info.txt
 
-all: data tests eda-output.txt data regression.RData report.pdf
+all: data tests eda regression report.pdf
 
-session-info.txt: 
+session-info.txt: session-info-script.R
 	cd code; Rscript session-info-script.R
 
 report.pdf: report/report.RMD 
