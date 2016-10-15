@@ -1,19 +1,28 @@
-.PHONY: clean data all
+.PHONY: clean data tests all eda regression
 
-all: data eda-output.txt data regression.RData report.pdf
+all: data tests eda-output.txt data regression.RData report.pdf
 
 report.pdf: report/report.RMD 
 	cd report; pandoc report.RMD -s -o report.pdf
 
 
-regression.RData: code/regression-script.R data/Advertising.csv
-	cd code; Rscript regression-script.R Advertising.csv
+regression.RData: code/scripts/regression-script.R data/Advertising.csv
+	cd code; cd scripts; Rscript regression-script.R Advertising.csv
 
-eda-output.txt: code/eda-script.R data/Advertising.csv
-	cd code; Rscript eda-script.R Advertising.csv
+eda-output.txt: code/scripts/eda-script.R data/Advertising.csv
+	cd code; cd scripts; Rscript eda-script.R Advertising.csv
 
 clean: 
 	cd report; rm report.pdf
 
 data: 
 	cd data; curl -O "http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv"
+
+tests:
+	cd code; Rscript test-that.R
+
+eda:
+	cd code; cd scripts; Rscript eda-script.R Advertising.csv
+
+regression:
+	cd code; cd scripts; Rscript regression-script.R ../../data/Advertising.csv
